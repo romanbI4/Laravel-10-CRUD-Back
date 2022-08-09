@@ -25,36 +25,22 @@ build: ## Builds the Docker images
 up: ## Start the docker hub in detached mode (no logs)
 	@$(DOCKER_COMP) up --detach
 
-start: build up generate-key chmod migrate
+start: build up chmod migrate
 
 down: ## Stop the docker hub
 	@$(DOCKER_COMP) down --remove-orphans
 
 chmod:
-	@$(PHP_CONT) sh -c "cd backend; chmod 777 -R storage; chmod 777 -R storage/logs; chmod 777 -R database/migrations; chmod 777 -R database/factories; chmod 777 -R database/seeds; chmod 777 -R resources;"
+	@$(PHP_CONT) sh -c "cd backend; chmod 777 -R storage; chmod 777 -R storage/logs; chmod 777 -R database/migrations; chmod 777 -R database/factories; chmod 777 -R database/seeders; chmod 777 -R resources; chmod 777 -R .env; chmod 777 -R .gitignore"
 
 sh: ## Connect to the PHP FPM container
 	@$(PHP_CONT) sh
-
-generate-key:
-	@$(PHP_CONT) sh -c "cd backend; php artisan key:generate"
 
 migrate:
 	@$(PHP_CONT) sh -c "cd backend; php artisan migrate:fresh"
 
 logs: ## Show live logs
 	@$(DOCKER_COMP) logs --tail=0 --follow
-
-## —— FRONT  ———————————————————————————————————————————————————————————————————
-
-admin-watch:
-	$(PHP_CONT) sh -c "cd backend; npm run watch"
-
-admin-build:
-	$(PHP_CONT) sh -c "cd backend; composer require laravel/ui:^2.4; php artisan ui vue"
-
-npm-install:
-	$(PHP_CONT) sh -c "cd backend; npm install;"
 
 ## —— Composer 🧙 ——————————————————————————————————————————————————————————————
 composer: ## Run composer, pass the parameter "c=" to run a given command, example: make composer c='req symfony/orm-pack'

@@ -1,4 +1,4 @@
-FROM php:8.0.0-fpm
+FROM php:8.0.2-fpm
 
 COPY wait-for-it.sh /usr/bin/wait-for-it
 
