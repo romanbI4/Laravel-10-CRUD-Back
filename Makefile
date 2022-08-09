@@ -25,7 +25,7 @@ build: ## Builds the Docker images
 up: ## Start the docker hub in detached mode (no logs)
 	@$(DOCKER_COMP) up --detach
 
-start: build up chmod migrate
+start: build up chmod migrate seed
 
 down: ## Stop the docker hub
 	@$(DOCKER_COMP) down --remove-orphans
@@ -38,6 +38,9 @@ sh: ## Connect to the PHP FPM container
 
 migrate:
 	@$(PHP_CONT) sh -c "cd backend; php artisan migrate:fresh"
+
+seed:
+	@$(PHP_CONT) sh -c "cd backend; php artisan db:seed"
 
 logs: ## Show live logs
 	@$(DOCKER_COMP) logs --tail=0 --follow
