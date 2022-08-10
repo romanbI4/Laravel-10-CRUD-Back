@@ -21,4 +21,14 @@ class UsersService
 
         return $this->usersRepository->create($user);
     }
+
+    public function getOneByParams($column, $params)
+    {
+        return $this->usersRepository->getOneByParams($column, $params);
+    }
+
+    public function updateOneByParams($id, $params)
+    {
+        return $this->usersRepository->updateOneByParams($id, $params);
+    }
 }

@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Services\UsersService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 
 class UsersController extends Controller
@@ -37,18 +39,39 @@ class UsersController extends Controller
                 ]);
         } else {
             return response()
-                ->json([
-                    'status' => 'error'
-                ],401);
+                ->json(['status' => 'Invalid data'],401);
         }
     }
 
     public function signIn(Request $request)
     {
-        $this->validate($request, [
+        $validation = $this->validate($request, [
             'email' => 'required|email',
             'password' => 'required|string',
         ]);
+
+        if ($validation) {
+
+            $user = $this->usersService->getOneByParams('email', $request->input('email'));
+
+            if (Hash::check($request->password, $user->password)){
+
+                $apiToken = Str::random(40);
+                $this->usersService->updateOneByParams($user->id, ["api_token" => $apiToken]);
+
+                return response()
+                    ->json([
+                        'status' => 'success',
+                        'api_token' => $apiToken
+                    ]);
+
+            } else {
+
+                return response()
+                    ->json(['status' => 'Invalid credentials'],401);
+
+            }
+        }
     }
 
     public function recoverPassword(Request $request)

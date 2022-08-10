@@ -11,4 +11,14 @@ class UsersRepository implements UsersRepositoryInterface
     {
         return Users::create($details);
     }
+
+    public function getOneByParams($column, $params)
+    {
+        return Users::where($column, $params)->first();
+    }
+
+    public function updateOneByParams($id, $params)
+    {
+        return Users::whereId($id)->update($params);
+    }
 }
