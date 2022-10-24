@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Auth\Passwords\PasswordResetServiceProvider;
+
 require_once __DIR__.'/../vendor/autoload.php';
 
 (new Laravel\Lumen\Bootstrap\LoadEnvironmentVariables(
@@ -23,8 +25,7 @@ $app = new Laravel\Lumen\Application(
     dirname(__DIR__)
 );
 
- $app->withFacades();
-
+$app->withFacades();
 $app->withEloquent();
 
 /*
@@ -60,6 +61,8 @@ $app->singleton(
 */
 
 $app->configure('app');
+$app->configure('services');
+$app->configure('mail');
 
 /*
 |--------------------------------------------------------------------------
@@ -72,36 +75,38 @@ $app->configure('app');
 |
 */
 
-// $app->middleware([
-//     App\Http\Middleware\ExampleMiddleware::class
-// ]);
-
-// $app->routeMiddleware([
-//     'auth' => App\Http\Middleware\Authenticate::class,
-// ]);
+$app->routeMiddleware([
+    'auth' => App\Http\Middleware\Authenticate::class
+]);
 
 /*
 |--------------------------------------------------------------------------
 | Register Service Providers
 |--------------------------------------------------------------------------
 |
-| Here we will register all of the application's service providers which
+| Here we will register all the application's service providers which
 | are used to bind services into the container. Service providers are
 | totally optional, so you are not required to uncomment this line.
 |
 */
-
-// $app->register(App\Providers\AppServiceProvider::class);
+$app->register(PasswordResetServiceProvider::class);
+$app->register(Illuminate\Mail\MailServiceProvider::class);
+$app->register(App\Providers\AppServiceProvider::class);
 $app->register(App\Providers\AuthServiceProvider::class);
-// $app->register(App\Providers\EventServiceProvider::class);
-
+$app->register(App\Providers\EventServiceProvider::class);
+$app->register(Illuminate\Notifications\NotificationServiceProvider::class);
+$app->alias('mail.manager', Illuminate\Mail\MailManager::class);
+$app->alias('mail.manager', Illuminate\Contracts\Mail\Factory::class);
+$app->alias('mailer', Illuminate\Mail\Mailer::class);
+$app->alias('mailer', Illuminate\Contracts\Mail\Mailer::class);
+$app->alias('mailer', Illuminate\Contracts\Mail\MailQueue::class);
 /*
 |--------------------------------------------------------------------------
 | Load The Application Routes
 |--------------------------------------------------------------------------
 |
 | Next we will include the routes file so that they can all be added to
-| the application. This will provide all of the URLs the application
+| the application. This will provide all the URLs the application
 | can respond to, as well as the controllers that may handle them.
 |
 */

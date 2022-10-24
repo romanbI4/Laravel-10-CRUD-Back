@@ -1,22 +1,33 @@
 <?php
+
 namespace App\Models;
 
+use App\Notifications\ResetPasswordNotification;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Contracts\Auth\Authenticatable;
-use Illuminate\Auth\Authenticatable as AuthenticableTrait;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Auth\Passwords\CanResetPassword;
+use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
+use Illuminate\Notifications\Notifiable;
 
-class Users extends Model implements Authenticatable
+class Users extends Model implements CanResetPasswordContract
 {
-    use AuthenticableTrait;
+    use CanResetPassword, Notifiable;
 
     protected $fillable = ['first_name', 'last_name', 'password', 'email', 'phone'];
 
     protected $hidden = [
-        'password'
+        'password',
+        'remember_token'
     ];
 
-    public function companies()
+    public function companies(): HasMany
     {
-        return $this->hasMany('App\Companies','user_id');
+        return $this->hasMany('App\Companies', 'user_id');
     }
+
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new ResetPasswordNotification($token));
+    }
+
 }
