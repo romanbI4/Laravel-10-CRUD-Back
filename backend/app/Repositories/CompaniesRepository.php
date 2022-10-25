@@ -3,33 +3,33 @@
 namespace App\Repositories;
 
 use App\Interfaces\CompaniesRepositoryInterface;
-use App\Models\Companies;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Auth;
 
 class CompaniesRepository implements CompaniesRepositoryInterface
 {
     public function getList(): Collection
     {
-        return Companies::all();
+        return Auth::user()->companies;
     }
 
     public function create(array $details)
     {
-        return Companies::create($details);
+        return Auth::user()->companies()->create($details);
     }
 
     public function getOneByParams($column, $params)
     {
-        return Companies::where($column, $params)->first();
+        return Auth::user()->companies->where($column, $params);
     }
 
     public function updateOneByParams($id, $params)
     {
-        return Companies::whereId($id)->update($params);
+        return Auth::user()->companies()->update($params);
     }
 
     public function destroy($id): int
     {
-        return Companies::destroy($id);
+        return Auth::user()->companies->first()->destroy($id);
     }
 }
