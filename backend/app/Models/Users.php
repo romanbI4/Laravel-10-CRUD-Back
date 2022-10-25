@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Notifications\ResetPasswordNotification;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Auth\Passwords\CanResetPassword;
@@ -22,12 +21,12 @@ class Users extends Model implements CanResetPasswordContract
 
     public function companies(): HasMany
     {
-        return $this->hasMany('App\Companies', 'user_id');
+        return $this->hasMany(Companies::class, 'user_id');
     }
 
-    public function sendPasswordResetNotification($token)
+    public function getId()
     {
-        $this->notify(new ResetPasswordNotification($token));
+        return $this->id;
     }
 
 }

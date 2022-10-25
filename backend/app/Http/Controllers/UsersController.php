@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use App\Traits\ResetsPasswords;
+use Illuminate\Validation\ValidationException;
 
 class UsersController extends Controller
 {
@@ -25,9 +26,18 @@ class UsersController extends Controller
     /**
      * @param  Request  $request
      * @return JsonResponse
+     * @throws ValidationException
      */
     public function register(Request $request): JsonResponse
     {
+        $this->validate($request, [
+            'first_name' => 'required|string',
+            'last_name' => 'required|string',
+            'email' => 'required|unique:users,email|string',
+            'password' => 'required|string',
+            'phone' => 'required|unique:users,phone|string|digits:10'
+        ]);
+
         return response()
             ->json([
                 'status' => 'success',
@@ -35,8 +45,16 @@ class UsersController extends Controller
             ]);
     }
 
+    /**
+     * @throws ValidationException
+     */
     public function signIn(Request $request): JsonResponse
     {
+        $this->validate($request, [
+            'email' => 'required|exists:users,email|string',
+            'password' => 'required|string'
+        ]);
+
         if ($request->email) {
             $user = $this->usersService->getOneByParams('email', $request->email);
         }
