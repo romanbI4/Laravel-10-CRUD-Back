@@ -3,14 +3,18 @@
 namespace App\Traits;
 
 use App\Models\Users;
+use App\Notifications\ResetPasswordNotification;
 use Illuminate\Auth\Passwords\PasswordBrokerManager;
 use Illuminate\Contracts\Auth\CanResetPassword;
 use Illuminate\Contracts\Auth\PasswordBroker;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
+use Illuminate\View\View;
+use Laravel\Lumen\Application;
 use Symfony\Component\HttpFoundation\Response;
 
 trait ResetsPasswords
@@ -22,7 +26,7 @@ trait ResetsPasswords
      * @return Response
      * @throws ValidationException
      */
-    public function postEmail(Request $request): Response
+    public function postLink(Request $request): Response
     {
         return $this->sendResetLinkEmail($request);
     }
@@ -39,8 +43,15 @@ trait ResetsPasswords
         $this->validateSendResetLinkEmail($request);
 
         $response = $this->broker()->sendResetLink(
-            $this->getSendResetLinkEmailCredentials($request), function (Users $user) {
-            return Password::createToken($user);
+            $this->getSendResetLinkEmailCredentials($request), function (Users $user) use ($request) {
+            return Mail::send(
+                'email.sendLinkResetPassword',
+                ['token' => Password::createToken($user)],
+                function ($message) use ($request) {
+                    $message->to($request->email);
+                    $message->subject('Reset Password');
+                }
+            );
         }
         );
 
@@ -96,7 +107,7 @@ trait ResetsPasswords
      * @return Response
      * @throws ValidationException
      */
-    public function postReset(Request $request): Response
+    public function postPassword(Request $request): Response
     {
         return $this->reset($request);
     }

@@ -27,8 +27,8 @@ $router->group(['prefix' => 'api/user'], function ($app) {
         $app->post('/sign-in', 'UsersController@signIn');
     });
 
-    Route::post('/recover-password/email', 'UsersController@postEmail');
-    Route::post('/recover-password/reset/{token}', ['as' => 'password.reset', 'uses' => 'UsersController@postReset']);
+    Route::post('/recover-password/link', 'UsersController@postLink');
+    Route::post('/recover-password/submit', ['as' => 'password.reset', 'uses' => 'UsersController@postPassword']);
 
     $app->group(['middleware' => 'auth'], function ($app) {
         $app->post('/companies', 'CompaniesController@store');
