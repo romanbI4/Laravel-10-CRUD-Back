@@ -1,6 +1,8 @@
 <?php
 
-namespace Tests;
+namespace Tests\Http\Controllers;
+
+use Tests\TestCase;
 
 class AuthorizationTest extends TestCase
 {
@@ -14,9 +16,9 @@ class AuthorizationTest extends TestCase
         $user = [
             "first_name" => "111",
             "last_name" => "222",
-            "email" => "vdov.romanoff_test1112345@gmail.com",
+            "email" => "test@gmail.com",
             "password" => "555",
-            "phone" => "0661050665"
+            "phone" => "0668888888"
         ];
 
         $response = $this->json(
@@ -38,7 +40,7 @@ class AuthorizationTest extends TestCase
     public function test_login(): void
     {
         $user = [
-            "email" => "vdov.romanoff_test1112345@gmail.com",
+            "email" => "test@gmail.com",
             "password" => "555",
         ];
 

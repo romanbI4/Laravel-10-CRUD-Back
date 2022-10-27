@@ -3,7 +3,6 @@
 namespace App\Traits;
 
 use App\Models\Users;
-use App\Notifications\ResetPasswordNotification;
 use Illuminate\Auth\Passwords\PasswordBrokerManager;
 use Illuminate\Contracts\Auth\CanResetPassword;
 use Illuminate\Contracts\Auth\PasswordBroker;
@@ -13,8 +12,6 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
-use Illuminate\View\View;
-use Laravel\Lumen\Application;
 use Symfony\Component\HttpFoundation\Response;
 
 trait ResetsPasswords
