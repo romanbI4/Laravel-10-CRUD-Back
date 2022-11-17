@@ -3,7 +3,7 @@ DOCKER_FOLDER = cd docker;
 DOCKER_COMP = $(DOCKER_FOLDER) docker-compose
 
 # Docker containers
-PHP_CONT = $(DOCKER_COMP) exec php-fpm
+PHP_CONT = $(DOCKER_COMP) exec php
 
 # Executables
 PHP      = $(PHP_CONT) php
@@ -20,15 +20,15 @@ help: ## Outputs this help screen
 
 ## —— Docker 🐳 ————————————————————————————————————————————————————————————————
 build: ## Builds the Docker images
-	@$(DOCKER_COMP) build --pull --no-cache
+	@$(DOCKER_COMP) -p lumen_testing build --pull --no-cache
 
 up: ## Start the docker hub in detached mode (no logs)
-	@$(DOCKER_COMP) up --detach
+	@$(DOCKER_COMP) -p lumen_testing up --detach
 
 start: build up chmod migrate seed
 
 down: ## Stop the docker hub
-	@$(DOCKER_COMP) down --remove-orphans
+	@$(DOCKER_COMP) -p lumen_testing down --remove-orphans
 
 chmod:
 	@$(PHP_CONT) sh -c "cd backend; chmod 777 -R storage; chmod 777 -R storage/logs; chmod 777 -R database/migrations; chmod 777 -R database/factories; chmod 777 -R database/seeders; chmod 777 -R resources; chmod 777 -R .env; chmod 777 -R .gitignore"
@@ -43,7 +43,7 @@ seed:
 	@$(PHP_CONT) sh -c "cd backend; php artisan db:seed"
 
 logs: ## Show live logs
-	@$(DOCKER_COMP) logs --tail=0 --follow
+	@$(DOCKER_COMP) -p lumen_testing logs --tail=0 --follow
 
 ## —— Composer 🧙 ——————————————————————————————————————————————————————————————
 composer: ## Run composer, pass the parameter "c=" to run a given command, example: make composer c='req symfony/orm-pack'

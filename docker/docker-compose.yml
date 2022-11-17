@@ -9,7 +9,7 @@ services:
       POSTGRES_USER: root
       POSTGRES_PASSWORD: root
     ports:
-      - "5432:5432"
+      - "5433:5432"
 
   php-fpm:
     container_name: php-fpm_testing
@@ -18,7 +18,7 @@ services:
     volumes:
       - ./../:/var/www
     ports:
-      - "3001:3001"
+      - "3001:3000"
 
   nginx:
     container_name: nginx_testing
@@ -33,5 +33,4 @@ services:
     depends_on:
       - php-fpm
     ports:
-      - "81:81"
-      - "444:444"
+      - "81:80"
