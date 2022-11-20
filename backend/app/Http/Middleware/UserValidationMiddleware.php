@@ -21,25 +21,26 @@ class UserValidationMiddleware
             $validation = [
                 'first_name' => 'required|string',
                 'last_name' => 'required|string',
-                'email' => 'required|email|unique:users',
+                'email' => 'required|email|unique:users,email',
                 'password' => 'required|string',
-                'phone' => 'required|string|unique:users'
+                'phone' => 'required|unique:users,phone|string|digits:10'
             ];
         } elseif ($request->email && $request->password) {
             $validation = [
-                'email' => 'required|email',
+                'email' => 'required|email|exists:users,email',
                 'password' => 'required|string'
             ];
         } else {
             $validation = [
-                'email' => 'required|email'
+                'email' => 'required|email|exists:users,email'
             ];
         }
 
         $validator = Validator::make($request->all(), $validation);
 
         if ($validator->fails()) {
-            return response('Invalid data.', 401);
+            return response()
+                ->json(['status' => 'error', 'errors' => $validator->errors()->getMessages()], 422);
         }
 
         return $next($request);

@@ -30,15 +30,7 @@ class UsersController extends Controller
      */
     public function register(Request $request): JsonResponse
     {
-        $this->validate($request, [
-            'first_name' => 'required|string',
-            'last_name' => 'required|string',
-            'email' => 'required|unique:users,email|string',
-            'password' => 'required|string',
-            'phone' => 'required|unique:users,phone|string|digits:10'
-        ]);
-
-        return response()
+       return response()
             ->json([
                 'status' => 'success',
                 'data' => $this->usersService->create($request)
@@ -50,11 +42,6 @@ class UsersController extends Controller
      */
     public function signIn(Request $request): JsonResponse
     {
-        $this->validate($request, [
-            'email' => 'required|exists:users,email|string',
-            'password' => 'required|string'
-        ]);
-
         if ($request->email) {
             $user = $this->usersService->getOneByParams('email', $request->email);
         }
@@ -71,11 +58,9 @@ class UsersController extends Controller
                     ]);
             } else {
                 return response()
-                    ->json(['status' => 'Invalid credentials'], 401);
+                    ->json(['status' => 'error', 'errors' => 'Invalid credentials'], 401);
             }
-        } else {
-            return response()
-                ->json(['status' => 'Not found user with this email'], 401);
         }
+
     }
 }

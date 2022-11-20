@@ -16,5 +16,3 @@ RUN apt-get update && \
 COPY --from=composer /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www
-
-EXPOSE 9000
