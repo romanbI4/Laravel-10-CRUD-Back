@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class UserValidationMiddleware
@@ -17,7 +18,7 @@ class UserValidationMiddleware
      */
     public function handle($request, Closure $next)
     {
-        if ($request->firstName || $request->lastName || $request->phone) {
+        if ($request->first_name || $request->last_name || $request->phone) {
             $validation = [
                 'first_name' => 'required|string',
                 'last_name' => 'required|string',
@@ -38,9 +39,12 @@ class UserValidationMiddleware
 
         $validator = Validator::make($request->all(), $validation);
 
+        Log::debug('request', $request->all());
+
         if ($validator->fails()) {
+            Log::debug('validation_fails', $validator->errors()->messages());
             return response()
-                ->json(['status' => 'error', 'errors' => $validator->errors()->getMessages()], 422);
+                ->json(['status' => 'error', 'errors' => $validator->errors()->messages()], 422);
         }
 
         return $next($request);

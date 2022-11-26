@@ -8,7 +8,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use App\Traits\ResetsPasswords;
-use Illuminate\Validation\ValidationException;
 
 class UsersController extends Controller
 {
@@ -26,7 +25,6 @@ class UsersController extends Controller
     /**
      * @param  Request  $request
      * @return JsonResponse
-     * @throws ValidationException
      */
     public function register(Request $request): JsonResponse
     {
@@ -38,7 +36,8 @@ class UsersController extends Controller
     }
 
     /**
-     * @throws ValidationException
+     * @param  Request  $request
+     * @return JsonResponse
      */
     public function signIn(Request $request): JsonResponse
     {
