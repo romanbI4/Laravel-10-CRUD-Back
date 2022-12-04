@@ -44,7 +44,7 @@ class UserValidationMiddleware
         if ($validator->fails()) {
             Log::debug('validation_fails', $validator->errors()->messages());
             return response()
-                ->json(['status' => 'error', 'errors' => $validator->errors()->messages()], 422);
+                ->json(['status' => 'error', 'data' => $validator->errors()->messages()], 422);
         }
 
         return $next($request);

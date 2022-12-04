@@ -28,7 +28,7 @@ class UsersController extends Controller
      */
     public function register(Request $request): JsonResponse
     {
-       return response()
+        return response()
             ->json([
                 'status' => 'success',
                 'data' => $this->usersService->create($request)
@@ -57,9 +57,13 @@ class UsersController extends Controller
                     ]);
             } else {
                 return response()
-                    ->json(['status' => 'error', 'errors' => 'Invalid credentials'], 401);
+                    ->json([
+                        'status' => 'error',
+                        'data' => [
+                            'credentials' => 'Invalid credentials'
+                        ]
+                    ], 401);
             }
         }
-
     }
 }

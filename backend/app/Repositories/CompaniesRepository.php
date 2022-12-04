@@ -20,7 +20,7 @@ class CompaniesRepository implements CompaniesRepositoryInterface
 
     public function getOneByParams($column, $params)
     {
-        return Auth::user()->companies->where($column, $params);
+        return Auth::user()->companies->where($column, $params)->first();
     }
 
     public function updateOneByParams($id, $params)
